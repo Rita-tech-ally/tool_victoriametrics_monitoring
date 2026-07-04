@@ -263,14 +263,22 @@ pipeline {
                 echo "Pipeline action '${params.ACTION}' completed successfully!"
                 
                 // Send Email Notification
-                mail to: 'rituc7707@gmail.com',
-                     subject: "SUCCESS: Job '${env.JOB_NAME}' [build #${env.BUILD_NUMBER}]",
-                     body: "Pipeline action '${params.ACTION}' completed successfully.\nView build logs at: ${env.BUILD_URL}"
+                try {
+                    mail to: 'rituc7707@gmail.com',
+                         subject: "SUCCESS: Job '${env.JOB_NAME}' [build #${env.BUILD_NUMBER}]",
+                         body: "Pipeline action '${params.ACTION}' completed successfully.\nView build logs at: ${env.BUILD_URL}"
+                } catch (Exception e) {
+                    echo "Failed to send Email notification: ${e.getMessage()}"
+                }
                 
                 // Send Slack Notification
-                slackSend(channel: '#all-ritu',
-                          color: 'good',
-                          message: "SUCCESS: Job '${env.JOB_NAME}' [build #${env.BUILD_NUMBER}] completed successfully.\nAction: ${params.ACTION}\nView logs: ${env.BUILD_URL}")
+                try {
+                    slackSend(channel: '#all-ritu',
+                              color: 'good',
+                              message: "SUCCESS: Job '${env.JOB_NAME}' [build #${env.BUILD_NUMBER}] completed successfully.\nAction: ${params.ACTION}\nView logs: ${env.BUILD_URL}")
+                } catch (Exception e) {
+                    echo "Failed to send Slack notification: ${e.getMessage()}"
+                }
             }
         }
         failure {
@@ -278,14 +286,22 @@ pipeline {
                 echo "Pipeline action '${params.ACTION}' failed. Check stage logs for details."
                 
                 // Send Email Notification
-                mail to: 'rituc7707@gmail.com',
-                     subject: "FAILURE: Job '${env.JOB_NAME}' [build #${env.BUILD_NUMBER}]",
-                     body: "Pipeline action '${params.ACTION}' failed.\nView build logs at: ${env.BUILD_URL}"
+                try {
+                    mail to: 'rituc7707@gmail.com',
+                         subject: "FAILURE: Job '${env.JOB_NAME}' [build #${env.BUILD_NUMBER}]",
+                         body: "Pipeline action '${params.ACTION}' failed.\nView build logs at: ${env.BUILD_URL}"
+                } catch (Exception e) {
+                    echo "Failed to send Email notification: ${e.getMessage()}"
+                }
                 
                 // Send Slack Notification
-                slackSend(channel: '#all-ritu',
-                          color: 'danger',
-                          message: "FAILURE: Job '${env.JOB_NAME}' [build #${env.BUILD_NUMBER}] failed.\nAction: ${params.ACTION}\nView logs: ${env.BUILD_URL}")
+                try {
+                    slackSend(channel: '#all-ritu',
+                              color: 'danger',
+                              message: "FAILURE: Job '${env.JOB_NAME}' [build #${env.BUILD_NUMBER}] failed.\nAction: ${params.ACTION}\nView logs: ${env.BUILD_URL}")
+                } catch (Exception e) {
+                    echo "Failed to send Slack notification: ${e.getMessage()}"
+                }
             }
         }
     }
