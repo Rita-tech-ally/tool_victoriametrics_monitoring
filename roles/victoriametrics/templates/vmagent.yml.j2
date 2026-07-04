@@ -1,0 +1,10 @@
+global:
+  scrape_interval: "{{ scrape_interval }}"
+
+scrape_configs:
+  - job_name: "vmagent"
+    static_configs:
+      - targets:
+{% for host in groups['vmagent'] | default([]) %}
+          - "{{ hostvars[host].private_ip_address | default(hostvars[host].ansible_host) | default(host) }}:8429"
+{% endfor %}

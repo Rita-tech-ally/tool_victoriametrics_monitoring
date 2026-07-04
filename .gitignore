@@ -1,0 +1,24 @@
+# SSH Keys (Sensitive)
+*.pem
+sakshi.pem
+
+# Terraform files
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+*.tfvars
+*.tfvars.json
+*.auto.tfvars
+
+# Ansible temporary files
+.ansible/
+*.retry
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+ehthumbs.db
+Icon?
+Thumbs.db

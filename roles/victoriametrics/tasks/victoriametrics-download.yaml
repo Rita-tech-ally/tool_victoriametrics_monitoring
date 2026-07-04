@@ -1,0 +1,28 @@
+---
+- name: Create download workspace
+  ansible.builtin.file:
+    path: /tmp/victoriametrics
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Download VictoriaMetrics package
+  ansible.builtin.get_url:
+    url: "{{ vm_download_url }}"
+    dest: "/tmp/victoriametrics/victoria-metrics-{{ vm_setup_mode }}-{{ vm_version }}.tar.gz"
+    mode: "0644"
+  become: true
+  register: vm_download
+  retries: 3
+  delay: 5
+  until: vm_download is succeeded
+
+- name: Extract VictoriaMetrics binaries
+  ansible.builtin.unarchive:
+    src: "/tmp/victoriametrics/victoria-metrics-{{ vm_setup_mode }}-{{ vm_version }}.tar.gz"
+    dest: "{{ vm_bin_dir }}/"
+    remote_src: true
+    owner: "{{ vm_user }}"
+    group: "{{ vm_group }}"
+    mode: "0755"
+  become: true

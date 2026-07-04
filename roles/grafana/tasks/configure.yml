@@ -1,0 +1,14 @@
+---
+- name: Wait for Grafana service
+  ansible.builtin.uri:
+    url: "{{ grafana_url }}"
+    status_code: 200
+  register: __result
+  until: __result.status == 200
+  retries: 120
+  delay: 1
+
+- name: Change admin password
+  ansible.builtin.command: grafana cli admin reset-admin-password {{ grafana_admin_password }}
+  register: __command_admin
+  changed_when: __command_admin.rc == 0

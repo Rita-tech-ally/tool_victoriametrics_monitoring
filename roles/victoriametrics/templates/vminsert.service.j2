@@ -1,0 +1,18 @@
+[Unit]
+Description=VictoriaMetrics vminsert
+After=network.target
+
+[Service]
+User={{ vm_user }}
+Group={{ vm_group }}
+ExecStart={{ vm_bin_dir }}/{{ vm_binaries.vminsert }} \
+{% for node in vm_storage_nodes %}
+  -storageNode={{ node }}:{{ vm_ports.vminsert_conn }} \
+{% endfor %}
+  -replicationFactor={{ vm_replication_factor }} \
+  -httpListenAddr=:{{ vm_ports.insert }}
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,55 @@
+---
+# tasks file for victoriametrics
+# vmagent comes from a different package, so only download the core VM tarball
+# when a core component is actually being installed on this host.
+- name: Install common packages across all nodes
+  ansible.builtin.include_tasks: common.yaml
+  tags:
+    - victoriametrics
+    - common
+
+# --- HA / cluster --------------------------------------------------------
+- name: Set up vmstorage
+  ansible.builtin.include_tasks: vmstorage.yaml
+  when: "'vmstorage' in vm_components"
+  tags:
+    - victoriametrics
+    - ha
+    - vmstorage
+
+- name: Set up vminsert
+  ansible.builtin.include_tasks: vminsert.yaml
+  when: "'vminsert' in vm_components"
+  tags:
+    - victoriametrics
+    - ha
+    - vminsert
+
+- name: Set up vmselect
+  ansible.builtin.include_tasks: vmselect.yaml
+  when: "'vmselect' in vm_components"
+  tags:
+    - victoriametrics
+    - ha
+    - vmselect
+
+- name: Set up vmagent
+  ansible.builtin.include_tasks: vmagent.yaml
+  when: "'vmagent' in vm_components"
+  tags:
+    - victoriametrics
+    - vmagent
+
+- name: Set up vmalert
+  ansible.builtin.include_tasks: vmalert.yaml
+  when: "'vmalert' in vm_components"
+  tags:
+    - victoriametrics
+    - vmalert
+
+- name: Set up Alertmanager
+  ansible.builtin.include_tasks: alertmanager.yaml
+  when: "'alertmanager' in vm_components or inventory_hostname in groups['alertmanager'] | default([])"
+  tags:
+    - alertmanager
+    - alerting

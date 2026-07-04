@@ -1,0 +1,72 @@
+---
+# vmagent scrapes targets and remote-writes to vminsert (vm_remote_write_url).
+# It ships in the vmutils bundle, so it has its own download.
+
+- name: Create download workspace
+  ansible.builtin.file:
+    path: /tmp/victoriametrics
+    state: directory
+    mode: "0755"
+  become: true
+
+- name: Download vmutils package for vmagent
+  ansible.builtin.get_url:
+    url: "{{ vm_utils_download_url }}"
+    dest: "/tmp/victoriametrics/vmutils-{{ vm_version }}.tar.gz"
+    mode: "0644"
+  become: true
+  register: vmutils_download
+  retries: 3
+  delay: 5
+  until: vmutils_download is succeeded
+
+- name: Extract vmagent binary
+  ansible.builtin.unarchive:
+    src: "/tmp/victoriametrics/vmutils-{{ vm_version }}.tar.gz"
+    dest: "{{ vm_bin_dir }}/"
+    remote_src: true
+    owner: "{{ vm_user }}"
+    group: "{{ vm_group }}"
+    mode: "0755"
+  become: true
+
+- name: Create data directory for vmagent
+  ansible.builtin.file:
+    path: /var/lib/vmagent-data
+    state: directory
+    owner: "{{ vm_user }}"
+    group: "{{ vm_group }}"
+    mode: "0755"
+  become: true
+
+- name: Deploy vmagent scrape config
+  ansible.builtin.template:
+    src: vmagent.yml.j2
+    dest: /etc/vmagent.yml
+    owner: "{{ vm_user }}"
+    group: "{{ vm_group }}"
+    mode: "0644"
+  become: true
+  notify: Restart vmagent
+
+- name: Install vmagent systemd unit
+  ansible.builtin.template:
+    src: vmagent.service.j2
+    dest: /etc/systemd/system/vmagent.service
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  notify: Restart vmagent
+
+- name: Force systemd to reread configs (daemon-reload)
+  ansible.builtin.systemd:
+    daemon_reload: true
+  become: true
+
+- name: Ensure vmagent service is enabled and running
+  ansible.builtin.systemd:
+    name: vmagent
+    state: restarted
+    enabled: true
+  become: true

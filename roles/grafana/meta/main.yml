@@ -1,0 +1,14 @@
+---
+galaxy_info:
+  role_name: grafana
+  author: Rita
+  description: Grafana Role
+  company: MyGurukulam
+  license: MIT
+  min_ansible_version: "2.1"
+
+  platforms:
+    - name: EL
+      versions:
+        - "7"
+        - "8"

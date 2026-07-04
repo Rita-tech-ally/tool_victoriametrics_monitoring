@@ -1,0 +1,26 @@
+---
+# vars file for victoriametrics
+vm_ports:
+  insert: 8480
+  select: 8481
+  storage: 8482
+  alert: 8880
+  vminsert_conn: 8400
+  vmselect_conn: 8401
+
+vm_binaries:
+  vminsert: vminsert-prod
+  vmselect: vmselect-prod
+  vmstorage: vmstorage-prod
+  vmagent: vmagent-prod
+  vmalert: vmalert-prod
+
+vm_version: "v1.144.0"
+
+vm_user: vmuser
+vm_group: vmuser
+
+vm_storage_path: /var/lib/vmstorage
+vm_bin_dir: /usr/local/bin
+
+vm_replication_factor: 2

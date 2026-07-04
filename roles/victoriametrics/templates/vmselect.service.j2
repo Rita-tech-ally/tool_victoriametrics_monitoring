@@ -1,0 +1,18 @@
+[Unit]
+Description=VictoriaMetrics vmselect
+After=network.target
+
+[Service]
+User={{ vm_user }}
+Group={{ vm_group }}
+ExecStart={{ vm_bin_dir }}/{{ vm_binaries.vmselect }} \
+{% for node in vm_storage_nodes %}
+  -storageNode={{ node }}:{{ vm_ports.vmselect_conn }} \
+{% endfor %}
+  -dedup.minScrapeInterval={{ scrape_interval }} \
+  -httpListenAddr=:{{ vm_ports.select }}
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

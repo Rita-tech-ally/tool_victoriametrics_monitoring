@@ -1,0 +1,20 @@
+---
+
+grafana_gpg_key_url: "https://apt.grafana.com/gpg.key"
+grafana_gpg_key_tmp: "/tmp/grafana.key"
+grafana_keyring_dir: "/etc/apt/keyrings"
+grafana_keyring_file: "/etc/apt/keyrings/grafana.gpg"
+grafana_repo: "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main"
+
+# RedHat/CentOS/Rocky Repository Settings
+grafana_yum_repo_url: "https://rpm.grafana.com"
+grafana_yum_repo_gpg_key: "https://rpm.grafana.com/gpg.key"
+
+# Package
+grafana_package_name: grafana
+grafana_service_name: grafana-server
+grafana_admin_password: mypassword
+
+# Datasource
+grafana_datasource_path: "/etc/grafana/provisioning/datasources/victoriametrics.yml"
+grafana_datasource_template: "victoriametrics-datasource.yml.j2"

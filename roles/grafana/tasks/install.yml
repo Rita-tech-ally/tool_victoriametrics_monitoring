@@ -1,0 +1,13 @@
+---
+# tasks/install.yml
+
+- name: Install Grafana package
+  ansible.builtin.package:
+    name: "{{ grafana_package_name }}"
+    state: present
+
+- name: Start and enable Grafana service
+  ansible.builtin.systemd:
+    name: "{{ grafana_service_name }}"
+    state: started
+    enabled: true

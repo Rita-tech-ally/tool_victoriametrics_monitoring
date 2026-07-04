@@ -1,0 +1,19 @@
+---
+# tasks/common.yaml
+
+- name: Install common prerequisites (Debian/Ubuntu)
+  ansible.builtin.apt:
+    name: "{{ common_packages }}"
+    state: present
+    update_cache: true
+    cache_valid_time: "{{ common_apt_cache_valid_time }}"
+  when: ansible_os_family == "Debian"
+  become: true
+
+- name: Install common prerequisites (RedHat/CentOS)
+  ansible.builtin.dnf:
+    name: "{{ common_packages }}"
+    state: present
+    update_cache: true
+  when: ansible_os_family == "RedHat"
+  become: true

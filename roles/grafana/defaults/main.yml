@@ -1,0 +1,9 @@
+---
+grafana_required_packages:
+  - gnupg
+  - software-properties-common
+  - curl
+  - wget
+  - tar
+
+grafana_url: "http://127.0.0.1:3000"

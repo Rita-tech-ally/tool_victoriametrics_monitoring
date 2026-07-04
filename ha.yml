@@ -1,0 +1,68 @@
+---
+- name: Deploy vmstorage nodes
+  hosts: vmstorage
+  become: true
+  vars:
+    vm_setup_mode: ha
+    vm_components: ["vmstorage", "vmagent"]
+  roles:
+    - victoriametrics
+
+- name: Deploy vminsert nodes
+  hosts: vminsert
+  become: true
+  vars:
+    vm_setup_mode: ha
+    vm_components: ["vminsert", "vmagent"]
+    vm_storage_nodes: >-
+      {{ groups['vmstorage'] | default([])
+      | map('extract', hostvars, 'private_ip_address')
+      | select('string') | list }}
+  roles:
+    - victoriametrics
+
+- name: Deploy vmselect nodes
+  hosts: vmselect
+  become: true
+  vars:
+    vm_setup_mode: ha
+    vm_components: ["vmselect", "vmagent"]
+    vm_storage_nodes: >-
+      {{ groups['vmstorage'] | default([])
+      | map('extract', hostvars, 'private_ip_address')
+      | select('string') | list }}
+  roles:
+    - victoriametrics
+
+- name: Deploy vmagent nodes
+  hosts: vmagent
+  become: true
+  vars:
+    vm_setup_mode: ha
+    vm_components: ["vmagent"]
+  roles:
+    - victoriametrics
+
+- name: Deploy vmalert and Alertmanager nodes
+  hosts: vmalert
+  become: true
+  vars:
+    vm_setup_mode: ha
+    vm_components: ["vmalert", "alertmanager", "vmagent"]
+    vm_select_host: >-
+      {{ groups['vmselect'] | default([])
+      | map('extract', hostvars, 'private_ip_address')
+      | select('string') | list | first | default('localhost') }}
+  roles:
+    - victoriametrics
+
+- name: Deploy Grafana dashboarding node
+  hosts: grafana
+  become: true
+  vars:
+    victoriametrics_host: >-
+      {{ groups['vmselect'] | default([])
+      | map('extract', hostvars, 'private_ip_address')
+      | select('string') | list | first | default('localhost') }}
+  roles:
+    - grafana

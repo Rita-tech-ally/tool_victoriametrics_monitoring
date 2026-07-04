@@ -1,0 +1,35 @@
+---
+# tasks/repository.yml
+
+# --- Debian / Ubuntu Setup ---
+- name: Download Grafana GPG key (Debian)
+  ansible.builtin.get_url:
+    url: "{{ grafana_gpg_key_url }}"
+    dest: "{{ grafana_gpg_key_tmp }}"
+    mode: "0644"
+  when: ansible_os_family == "Debian"
+
+- name: Convert Grafana key to keyring format (Debian)
+  ansible.builtin.shell: |
+    gpg --dearmor -o {{ grafana_keyring_file }} {{ grafana_gpg_key_tmp }}
+  args:
+    creates: "{{ grafana_keyring_file }}"
+  when: ansible_os_family == "Debian"
+
+- name: Add Grafana repository (Debian)
+  ansible.builtin.apt_repository:
+    repo: "{{ grafana_repo }}"
+    state: present
+  when: ansible_os_family == "Debian"
+
+# --- RedHat / CentOS / Rocky Setup ---
+- name: Add Grafana YUM/DNF Repository (RedHat)
+  ansible.builtin.yum_repository:
+    name: grafana
+    description: Grafana Repository
+    baseurl: "{{ grafana_yum_repo_url }}"
+    repo_gpgcheck: true
+    gpgcheck: true
+    gpgkey: "{{ grafana_yum_repo_gpg_key }}"
+    enabled: true
+  when: ansible_os_family == "RedHat"

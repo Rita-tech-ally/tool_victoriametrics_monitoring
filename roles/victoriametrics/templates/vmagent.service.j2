@@ -1,0 +1,17 @@
+[Unit]
+Description=VictoriaMetrics vmagent
+After=network.target
+
+[Service]
+Type=simple
+User={{ vm_user }}
+Group={{ vm_group }}
+ExecStart={{ vm_bin_dir }}/{{ vm_binaries.vmagent }} \
+    -httpListenAddr=":8429" \
+    -promscrape.config="/etc/vmagent.yml" \
+    -remoteWrite.url="http://{{ groups['vminsert'][0] }}:8480/insert/0/prometheus/api/v1/write" \
+    -remoteWrite.tmpDataPath="/var/lib/vmagent-data"
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

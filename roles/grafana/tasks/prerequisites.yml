@@ -1,0 +1,14 @@
+---
+# tasks/prerequisites.yml
+
+- name: Install required packages across all platforms
+  ansible.builtin.package:
+    name: "{{ grafana_required_packages }}"
+    state: present
+
+- name: Create apt keyrings directory (Debian Only)
+  ansible.builtin.file:
+    path: "{{ grafana_keyring_dir }}"
+    state: directory
+    mode: "0755"
+  when: ansible_os_family == "Debian"

@@ -1,0 +1,17 @@
+[Unit]
+Description=VictoriaMetrics vmstorage
+After=network.target
+
+[Service]
+User={{ vm_user }}
+Group={{ vm_group }}
+ExecStart={{ vm_bin_dir }}/{{ vm_binaries.vmstorage }} \
+  -storageDataPath={{ vm_storage_path }} \
+  -httpListenAddr=:{{ vm_ports.storage }} \
+  -vminsertAddr=:{{ vm_ports.vminsert_conn }} \
+  -vmselectAddr=:{{ vm_ports.vmselect_conn }}
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

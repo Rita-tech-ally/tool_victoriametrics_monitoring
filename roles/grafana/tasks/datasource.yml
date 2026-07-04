@@ -1,0 +1,9 @@
+---
+- name: Provision VictoriaMetrics datasource
+  ansible.builtin.template:
+    src: "{{ grafana_datasource_template }}"
+    dest: "{{ grafana_datasource_path }}"
+    owner: root
+    group: grafana
+    mode: "0644"
+  notify: Restart Grafana

@@ -1,0 +1,31 @@
+---
+plugin: amazon.aws.aws_ec2
+
+regions:
+  - ap-south-1
+
+filters:
+  instance-state-name: running
+  tag:Name:
+    - "vminsert"
+    - "vmselect"
+    - "vmstorage-*"
+
+hostnames:
+  - ip-address
+  - dns-name
+  - private-ip-address
+
+keyed_groups:
+  - key: tags.component
+    prefix: "" # 
+    separator: ""
+
+  - key: tags.extrarole
+    prefix: ""
+    separator: ""
+
+groups:
+  vmagent: "'vmagent' in (tags.extrarole | default(''))"
+  vmalert: "'vmalert' in (tags.extrarole | default(''))"
+  grafana: "'grafana' in (tags.extrarole | default(''))"
