@@ -105,18 +105,11 @@ pipeline {
                 expression { params.ACTION == 'apply' }
             }
             steps {
-                script {
                     echo "Running Ansible dry-run (check mode)..."
-                    // Copy private key file to workspace with correct SSH permissions
-                    sh '''
-                        cp "${SSH_KEY_FILE}" sakshi.pem
-                        chmod 400 sakshi.pem
-                    '''
                     
                     // Run Ansible Playbook in check mode (dry-run)
                     // We allow this to fail/warn gracefully if some steps depend on actual files that aren't created in dry-run
                     sh 'ansible-playbook ha.yml --check || echo "Ansible Dry Run completed with warnings (expected on unprovisioned nodes)."'
-                }
             }
         }
 
@@ -126,12 +119,6 @@ pipeline {
             }
             steps {
                 script {
-                    // Copy private key file to workspace with correct SSH permissions
-                    sh '''
-                        cp "${SSH_KEY_FILE}" sakshi.pem
-                        chmod 400 sakshi.pem
-                    '''
-                    
                     // Run Ansible Playbook to configure the VM instances
                     sh 'ansible-playbook ha.yml'
                 }
