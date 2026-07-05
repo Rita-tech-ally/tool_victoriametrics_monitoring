@@ -1,6 +1,7 @@
 pipeline {
     agent {
         node {
+            label ''
             customWorkspace '/home/ritu/tool_victoria_metrics/victoriametrics-ha'
         }
     }
