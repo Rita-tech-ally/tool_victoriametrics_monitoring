@@ -29,8 +29,8 @@ pipeline {
                     sh 'aws --version'
                     
                     echo "Preparing SSH private key for Terraform and Ansible..."
-                    sh "cp \"${SSH_KEY_FILE}\" sakshi.pem"
-                    sh "chmod 400 sakshi.pem"
+                    sh 'cp "$SSH_KEY_FILE" sakshi.pem'
+                    sh 'chmod 400 sakshi.pem'
                 }
             }
         }
