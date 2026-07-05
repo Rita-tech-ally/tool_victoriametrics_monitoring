@@ -13,7 +13,7 @@ grafana_yum_repo_gpg_key: "https://rpm.grafana.com/gpg.key"
 # Package
 grafana_package_name: grafana
 grafana_service_name: grafana-server
-grafana_admin_password: mypassword
+grafana_admin_password: VMcluster#2026!Secure
 
 # Datasource
 grafana_datasource_path: "/etc/grafana/provisioning/datasources/victoriametrics.yml"
