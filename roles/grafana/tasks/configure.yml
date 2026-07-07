@@ -1,4 +1,21 @@
 ---
+- name: Install VictoriaMetrics Grafana datasource plugin
+  ansible.builtin.command: grafana-cli plugins install victoriametrics-datasource
+  register: __plugin_install
+  changed_when: "'Installed' in __plugin_install.stdout"
+  failed_when: false
+
+- name: Allow loading unsigned VictoriaMetrics plugins
+  ansible.builtin.lineinfile:
+    path: /etc/grafana/grafana.ini
+    regexp: '^;?allow_loading_unsigned_plugins =.*'
+    line: 'allow_loading_unsigned_plugins = victoriametrics-datasource,victoriametrics-logs-datasource'
+    insertafter: '^\[plugins\]'
+  notify: Restart Grafana
+
+- name: Flush handlers to restart Grafana
+  ansible.builtin.meta: flush_handlers
+
 - name: Wait for Grafana service
   ansible.builtin.uri:
     url: "{{ grafana_url }}"
