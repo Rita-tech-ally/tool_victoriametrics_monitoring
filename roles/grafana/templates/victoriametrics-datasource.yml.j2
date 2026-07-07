@@ -2,7 +2,7 @@ apiVersion: 1
 
 datasources:
   - name: VictoriaMetrics
-    type: victoriametrics-metrics-datasource
+    type: prometheus
     access: proxy
     url: "{% if query_alb_dns is defined and query_alb_dns | length > 0 %}http://{{ query_alb_dns }}:81/select/0/prometheus/{% else %}http://{{ victoriametrics_host }}:8481/select/0/prometheus/{% endif %}"
     isDefault: true

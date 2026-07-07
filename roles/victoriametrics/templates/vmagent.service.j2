@@ -9,7 +9,7 @@ Group={{ vm_group }}
 ExecStart={{ vm_bin_dir }}/{{ vm_binaries.vmagent }} \
     -httpListenAddr=":8429" \
     -promscrape.config="/etc/vmagent.yml" \
-    -remoteWrite.url="http://{{ groups['vminsert'][0] }}:8480/insert/0/prometheus/api/v1/write" \
+    -remoteWrite.url="{% if query_alb_dns is defined and query_alb_dns | length > 0 %}http://{{ query_alb_dns }}:80/insert/0/prometheus/api/v1/write{% else %}http://{{ groups['vminsert'][0] }}:8480/insert/0/prometheus/api/v1/write{% endif %}" \
     -remoteWrite.tmpDataPath="/var/lib/vmagent-data"
 Restart=on-failure
 
