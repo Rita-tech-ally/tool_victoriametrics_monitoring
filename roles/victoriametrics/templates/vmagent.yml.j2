@@ -19,16 +19,24 @@ scrape_configs:
   - job_name: "vminsert"
     static_configs:
       - targets:
+{% if query_alb_dns is defined and query_alb_dns | length > 0 %}
+          - "{{ query_alb_dns }}:80"
+{% else %}
 {% for host in groups['vminsert'] | default([]) %}
           - "{{ hostvars[host].private_ip_address | default(hostvars[host].ansible_host) | default(host) }}:8480"
 {% endfor %}
+{% endif %}
 
   - job_name: "vmselect"
     static_configs:
       - targets:
+{% if query_alb_dns is defined and query_alb_dns | length > 0 %}
+          - "{{ query_alb_dns }}:81"
+{% else %}
 {% for host in groups['vmselect'] | default([]) %}
           - "{{ hostvars[host].private_ip_address | default(hostvars[host].ansible_host) | default(host) }}:8481"
 {% endfor %}
+{% endif %}
 
   - job_name: "vmalert"
     static_configs:
