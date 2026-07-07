@@ -73,7 +73,7 @@ resource "aws_autoscaling_group" "app" {
   max_size            = 2
   min_size            = var.app_asg_min
   vpc_zone_identifier = slice(var.private_subnets, 0, 2)
-  target_group_arns   = [
+  target_group_arns = [
     aws_lb_target_group.vminsert.arn,
     aws_lb_target_group.vmselect.arn
   ]
