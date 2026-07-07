@@ -67,13 +67,3 @@ ssh_args = -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyC
 EOT
 }
 
-# --- COST ALLOCATION TAGS FOR BILLING EXPLORER ---
-resource "aws_ce_cost_allocation_tag" "costcenter" {
-  tag_key = "CostCenter"
-  status  = "Active"
-}
-
-resource "aws_ce_cost_allocation_tag" "project" {
-  tag_key = "Project"
-  status  = "Active"
-}
