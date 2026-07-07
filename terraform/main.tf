@@ -61,9 +61,12 @@ inventory = aws_ec2.yml
 host_key_checking = False
 remote_user = ubuntu
 private_key_file = sakshi.pem
+timeout = 60
 
 [ssh_connection]
-ssh_args = -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand="ssh -i sakshi.pem -o StrictHostKeyChecking=no -W %h:%p -q ubuntu@${module.compute.bastion_public_ip}"
+ssh_args = -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand="ssh -i sakshi.pem -o StrictHostKeyChecking=no -W %h:%p -q ubuntu@${module.compute.bastion_public_ip}" -o ConnectionAttempts=5 -o ConnectTimeout=60
+retries = 5
+pipelining = True
 EOT
 }
 
