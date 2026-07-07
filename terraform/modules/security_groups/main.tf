@@ -174,6 +174,18 @@ resource "aws_security_group" "storage" {
     protocol    = "tcp"
     cidr_blocks = [var.vpc_cidr] # vmagent access
   }
+  ingress {
+    from_port   = 8880
+    to_port     = 8880
+    protocol    = "tcp"
+    cidr_blocks = [var.vpc_cidr] # vmalert access
+  }
+  ingress {
+    from_port   = 9093
+    to_port     = 9093
+    protocol    = "tcp"
+    cidr_blocks = [var.vpc_cidr] # alertmanager access
+  }
 
   egress {
     from_port   = 0
