@@ -41,11 +41,11 @@ resource "aws_instance" "app" {
     Name      = "vm-app"
     component = "vm-app"
     Project   = var.project_name
-    extrarole = "vmagent"
+    
   }
 }
 
-# 3. APP LAUNCH TEMPLATE (vminsert + vmselect + vmagent)
+# 2. APP LAUNCH TEMPLATE (vminsert + vmselect + vmagent)
 resource "aws_launch_template" "app" {
   name_prefix   = "${var.project_name}-${var.environment}-app-"
   image_id      = var.ami_id_ingestion
@@ -60,15 +60,15 @@ resource "aws_launch_template" "app" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name      = "${var.project_name}-${var.environment}-app"
+      Name      = "vm-app"
       component = "vm-app"
-      extrarole = "vmagent"
+      Project   = var.project_name
     }
   }
 }
 
 
-# 4. STORAGE INSTANCES (Count based with exact conditional tagging)
+# 6. STORAGE INSTANCES (Count based with exact conditional tagging)
 resource "aws_instance" "storage" {
   count                  = 3
   ami                    = var.ami_id_storage
@@ -80,6 +80,7 @@ resource "aws_instance" "storage" {
   tags = {
     Name      = "vmstorage-${count.index + 1}"
     component = "vmstorage"
-    extrarole = count.index == 0 ? "grafana,vmagent" : (count.index == 1 ? "vmagent,vmalert" : "vmagent")
+    Project   = var.project_name
+    extrarole = count.index == 0 ? "grafana" : (count.index == 1 ? "vmalert" : "")
   }
 }
