@@ -29,10 +29,8 @@ resource "aws_instance" "bastion" {
   }
 }
 
-# 3. STANDALONE APP INSTANCE (Used for baking AMI, active only when app_asg_desired == 0)
 resource "aws_instance" "app" {
-  count                       = var.app_asg_desired == 0 ? 1 : 0
-  ami                         = var.ami_id_ingestion
+  ami                         = var.bastion_ami_id
   instance_type               = "t3.micro"
   subnet_id                   = var.private_subnets[0]
   key_name                    = var.ssh_key_name
@@ -40,8 +38,9 @@ resource "aws_instance" "app" {
   associate_public_ip_address = false
 
   tags = {
-    Name      = "${var.project_name}-${var.environment}-app-standalone"
+    Name      = "vm-app"
     component = "vm-app"
+    Project   = var.project_name
     extrarole = "vmagent"
   }
 }
