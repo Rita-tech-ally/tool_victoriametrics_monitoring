@@ -80,6 +80,6 @@ resource "aws_instance" "storage" {
   tags = {
     Name      = "vmstorage-${count.index + 1}"
     component = "vmstorage"
-    extrarole = count.index == 0 ? "grafana,vmagent,vmalert" : "vmagent"
+    extrarole = count.index == 0 ? "grafana,vmagent" : (count.index == 1 ? "vmagent,vmalert" : "vmagent")
   }
 }
