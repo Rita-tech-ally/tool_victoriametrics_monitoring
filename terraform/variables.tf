@@ -70,22 +70,12 @@ variable "baston_ip_cidr" {
   default     = "0.0.0.0/0"
 }
 
-variable "ingestion_asg_desired" {
+variable "app_asg_desired" {
   type    = number
-  default = 0
+  default = 2
 }
 
-variable "ingestion_asg_min" {
+variable "app_asg_min" {
   type    = number
-  default = 0
-}
-
-variable "query_asg_desired" {
-  type    = number
-  default = 0
-}
-
-variable "query_asg_min" {
-  type    = number
-  default = 0
+  default = 1
 }

@@ -6,10 +6,9 @@ regions:
 
 filters:
   instance-state-name: running
-  tag:Name:
-    - "vminsert"
-    - "vmselect"
-    - "vmstorage-*"
+  tag:component:
+    - "vmstorage"
+    - "vm-app"
 
 hostnames:
   - ip-address
@@ -26,6 +25,9 @@ keyed_groups:
     separator: ""
 
 groups:
-  vmagent: "'vmagent' in (tags.extrarole | default(''))"
+  vminsert: "'vm-app' in (tags.component | default(''))"
+  vmselect: "'vm-app' in (tags.component | default(''))"
+  vmstorage: "'vmstorage' in (tags.component | default(''))"
+  vmagent: "true"
   vmalert: "'vmalert' in (tags.extrarole | default(''))"
   grafana: "'grafana' in (tags.extrarole | default(''))"

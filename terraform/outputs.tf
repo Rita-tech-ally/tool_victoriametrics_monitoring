@@ -13,10 +13,7 @@ output "query_alb_dns" {
   description = "Public ALB URL to access Grafana Dashboards / Queries"
 }
 
-output "vminsert_instance_id" {
-  value = module.compute.vminsert_instance_id
-}
-
-output "vmselect_instance_id" {
-  value = module.compute.vmselect_instance_id
+output "app_instance_id" {
+  value       = module.compute.app_instance_id
+  description = "ID of the standalone app instance used for AMI baking"
 }

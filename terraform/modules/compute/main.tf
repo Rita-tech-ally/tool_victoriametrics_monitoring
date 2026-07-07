@@ -29,79 +29,46 @@ resource "aws_instance" "bastion" {
   }
 }
 
-resource "aws_instance" "vminsert" {
-  ami                    = var.bastion_ami_id
-  instance_type          = "t3.micro"
-  subnet_id              = var.private_subnets[0]
-  key_name               = var.ssh_key_name
-  vpc_security_group_ids = [var.sg_ingestion_id]
-
-  tags = {
-    Name      = "vminsert"
-    component = "vminsert"
-    extrarole = "vmagent"
-  }
-}
-
-resource "aws_instance" "vmselect" {
-  ami                    = var.bastion_ami_id
-  instance_type          = "t3.micro"
-  subnet_id              = var.private_subnets[0]
-  key_name               = var.ssh_key_name
-  vpc_security_group_ids = [var.sg_query_id]
-
-  tags = {
-    Name      = "vmselect"
-    component = "vmselect"
-    extrarole = "vmalert,vmagent"
-  }
-}
-
-# 2. INGESTION LAUNCH TEMPLATE (vminsert + vmagent)
-resource "aws_launch_template" "ingestion" {
-  name_prefix   = "${var.project_name}-${var.environment}-ingest-"
+# 2. APP LAUNCH TEMPLATE (vminsert + vmselect + vmagent)
+resource "aws_launch_template" "app" {
+  name_prefix   = "${var.project_name}-${var.environment}-app-"
   image_id      = var.ami_id_ingestion
   instance_type = "t3.micro"
   key_name      = var.ssh_key_name
 
   network_interfaces {
     associate_public_ip_address = false
-    security_groups             = [var.sg_ingestion_id]
+    security_groups             = [var.sg_ingestion_id, var.sg_query_id]
   }
 
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name      = "${var.project_name}-${var.environment}-ingest"
-      component = "vminsert"
+      Name      = "${var.project_name}-${var.environment}-app"
+      component = "vm-app"
       extrarole = "vmagent"
     }
   }
 }
 
-# 4. QUERY LAUNCH TEMPLATE (vmselect + vmalert)
-resource "aws_launch_template" "query" {
-  name_prefix   = "${var.project_name}-${var.environment}-query-"
-  image_id      = var.ami_id_query
-  instance_type = "t3.micro"
-  key_name      = var.ssh_key_name
+# 3. STANDALONE APP INSTANCE (Used for baking AMI, active only when app_asg_desired == 0)
+resource "aws_instance" "app" {
+  count                       = var.app_asg_desired == 0 ? 1 : 0
+  ami                         = var.ami_id_ingestion
+  instance_type               = "t3.micro"
+  subnet_id                   = var.private_subnets[0]
+  key_name                    = var.ssh_key_name
+  vpc_security_group_ids      = [var.sg_ingestion_id, var.sg_query_id]
+  associate_public_ip_address = false
 
-  network_interfaces {
-    associate_public_ip_address = false
-    security_groups             = [var.sg_query_id]
-  }
-
-  tag_specifications {
-    resource_type = "instance"
-    tags = {
-      Name      = "${var.project_name}-${var.environment}-query"
-      component = "vmselect"
-      extrarole = "vmalert,vmagent"
-    }
+  tags = {
+    Name      = "${var.project_name}-${var.environment}-app-standalone"
+    component = "vm-app"
+    extrarole = "vmagent"
   }
 }
 
-# 6. STORAGE INSTANCES (Count based with exact conditional tagging)
+# 4. STORAGE INSTANCES (Count based with exact conditional tagging)
 resource "aws_instance" "storage" {
   count                  = 3
   ami                    = var.ami_id_storage
@@ -113,6 +80,6 @@ resource "aws_instance" "storage" {
   tags = {
     Name      = "vmstorage-${count.index + 1}"
     component = "vmstorage"
-    extrarole = count.index == 0 ? "grafana,vmagent" : "vmagent"
+    extrarole = count.index == 0 ? "grafana,vmagent,vmalert" : "vmagent"
   }
 }

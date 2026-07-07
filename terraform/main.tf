@@ -19,23 +19,17 @@ module "security_groups" {
 }
 
 module "load_balancers" {
-  source         = "./modules/load_balancers"
-  project_name   = var.project_name
-  environment    = var.environment
-  vpc_id         = module.vpc.vpc_id
-  public_subnets = module.vpc.public_subnets
-  sg_alb_id      = module.security_groups.sg_alb_id
+  source                 = "./modules/load_balancers"
+  project_name           = var.project_name
+  environment            = var.environment
+  vpc_id                 = module.vpc.vpc_id
+  public_subnets         = module.vpc.public_subnets
+  sg_alb_id              = module.security_groups.sg_alb_id
+  private_subnets        = module.vpc.private_subnets
+  app_launch_template_id = module.compute.app_launch_template_id
 
-  private_subnets              = module.vpc.private_subnets
-  vminsert_instance_id         = module.compute.vminsert_instance_id
-  vmselect_instance_id         = module.compute.vmselect_instance_id
-  ingestion_launch_template_id = module.compute.ingestion_launch_template_id
-  query_launch_template_id     = module.compute.query_launch_template_id
-
-  ingestion_asg_desired = var.ingestion_asg_desired
-  ingestion_asg_min     = var.ingestion_asg_min
-  query_asg_desired     = var.query_asg_desired
-  query_asg_min         = var.query_asg_min
+  app_asg_desired = var.app_asg_desired
+  app_asg_min     = var.app_asg_min
 }
 
 module "compute" {
@@ -55,6 +49,8 @@ module "compute" {
   sg_ingestion_id = module.security_groups.sg_ingestion_id
   sg_query_id     = module.security_groups.sg_query_id
   sg_storage_id   = module.security_groups.sg_storage_id
+
+  app_asg_desired = var.app_asg_desired
 }
 
 resource "local_file" "ansible_cfg" {
@@ -69,4 +65,15 @@ private_key_file = sakshi.pem
 [ssh_connection]
 ssh_args = -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand="ssh -i sakshi.pem -o StrictHostKeyChecking=no -W %h:%p -q ubuntu@${module.compute.bastion_public_ip}"
 EOT
+}
+
+# --- COST ALLOCATION TAGS FOR BILLING EXPLORER ---
+resource "aws_ce_cost_allocation_tag" "costcenter" {
+  tag_key = "CostCenter"
+  status  = "Active"
+}
+
+resource "aws_ce_cost_allocation_tag" "project" {
+  tag_key = "Project"
+  status  = "Active"
 }

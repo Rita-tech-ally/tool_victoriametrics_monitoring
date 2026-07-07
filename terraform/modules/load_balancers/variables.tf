@@ -28,42 +28,17 @@ variable "private_subnets" {
   description = "List of private subnet IDs for the ASGs"
 }
 
-variable "vminsert_instance_id" {
+variable "app_launch_template_id" {
   type        = string
-  description = "ID of the standalone vminsert instance"
+  description = "ID of the app launch template"
 }
 
-variable "vmselect_instance_id" {
-  type        = string
-  description = "ID of the standalone vmselect instance"
-}
-
-variable "ingestion_launch_template_id" {
-  type        = string
-  description = "ID of the ingestion launch template"
-}
-
-variable "query_launch_template_id" {
-  type        = string
-  description = "ID of the query launch template"
-}
-
-variable "ingestion_asg_desired" {
+variable "app_asg_desired" {
   type    = number
   default = 0
 }
 
-variable "ingestion_asg_min" {
-  type    = number
-  default = 0
-}
-
-variable "query_asg_desired" {
-  type    = number
-  default = 0
-}
-
-variable "query_asg_min" {
+variable "app_asg_min" {
   type    = number
   default = 0
 }

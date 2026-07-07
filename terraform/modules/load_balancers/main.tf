@@ -68,52 +68,24 @@ resource "aws_lb_listener" "vmselect" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "vminsert" {
-  target_group_arn = aws_lb_target_group.vminsert.arn
-  target_id        = var.vminsert_instance_id
-  port             = 8480
-}
-
-resource "aws_lb_target_group_attachment" "vmselect" {
-  target_group_arn = aws_lb_target_group.vmselect.arn
-  target_id        = var.vmselect_instance_id
-  port             = 8481
-}
-
-resource "aws_autoscaling_group" "ingestion" {
-  desired_capacity    = var.ingestion_asg_desired
+resource "aws_autoscaling_group" "app" {
+  desired_capacity    = var.app_asg_desired
   max_size            = 2
-  min_size            = var.ingestion_asg_min
+  min_size            = var.app_asg_min
   vpc_zone_identifier = slice(var.private_subnets, 0, 2)
-  target_group_arns   = [aws_lb_target_group.vminsert.arn]
+  target_group_arns   = [
+    aws_lb_target_group.vminsert.arn,
+    aws_lb_target_group.vmselect.arn
+  ]
 
   launch_template {
-    id      = var.ingestion_launch_template_id
+    id      = var.app_launch_template_id
     version = "$Latest"
   }
 
   tag {
     key                 = "Name"
-    value               = "${var.project_name}-${var.environment}-ingest"
-    propagate_at_launch = true
-  }
-}
-
-resource "aws_autoscaling_group" "query" {
-  desired_capacity    = var.query_asg_desired
-  max_size            = 2
-  min_size            = var.query_asg_min
-  vpc_zone_identifier = slice(var.private_subnets, 0, 2)
-  target_group_arns   = [aws_lb_target_group.vmselect.arn]
-
-  launch_template {
-    id      = var.query_launch_template_id
-    version = "$Latest"
-  }
-
-  tag {
-    key                 = "Name"
-    value               = "${var.project_name}-${var.environment}-query"
+    value               = "${var.project_name}-${var.environment}-app"
     propagate_at_launch = true
   }
 }

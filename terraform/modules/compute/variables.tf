@@ -62,3 +62,8 @@ variable "sg_storage_id" {
   type        = string
   description = "Security group ID for the storage nodes."
 }
+
+variable "app_asg_desired" {
+  type    = number
+  default = 0
+}
