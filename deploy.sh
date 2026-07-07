@@ -32,7 +32,10 @@ if [ "$ACTION" == "apply" ]; then
 
   # 3. Configure the standalone instances using Ansible
   echo "=== Step 3: Configuring instances with Ansible ==="
-  ansible-playbook ha.yml --flush-cache
+  cd terraform
+  ALB_DNS=$(terraform output -raw query_alb_dns)
+  cd ..
+  ansible-playbook ha.yml --flush-cache --extra-vars "query_alb_dns=$ALB_DNS"
 
   # 4. Fetch standalone Instance ID from Terraform
   echo "=== Step 4: Fetching instance ID for AMI baking ==="
