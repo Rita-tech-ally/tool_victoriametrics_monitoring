@@ -6,6 +6,8 @@ regions:
 
 filters:
   instance-state-name: running
+  tag:Project:
+    - "victoria-metrics"
   tag:component:
     - "vmstorage"
     - "vm-app"
