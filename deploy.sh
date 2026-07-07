@@ -58,13 +58,13 @@ if [ "$ACTION" == "apply" ]; then
   aws ec2 wait image-available --image-ids "$APP_AMI_ID"
   echo "AMI is active and ready!"
 
-  # 7. Run second-stage Terraform Apply to scale ASGs to 1 using the new AMI
-  echo "=== Step 7: Scaling ASGs to 1 with the newly baked AMI ==="
+  # 7. Run second-stage Terraform Apply to scale ASGs to 2 using the new AMI
+  echo "=== Step 7: Scaling ASGs to 2 with the newly baked AMI ==="
   cd terraform
   terraform apply -auto-approve \
     -var="ami_id_ingestion=$APP_AMI_ID" \
-    -var="app_asg_desired=1" \
-    -var="app_asg_min=1"
+    -var="app_asg_desired=2" \
+    -var="app_asg_min=2"
   cd ..
 
   echo "=== Deployment Completed Successfully! ==="
