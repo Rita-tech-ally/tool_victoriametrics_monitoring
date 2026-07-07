@@ -9,6 +9,6 @@ output "app_launch_template_id" {
 }
 
 output "app_instance_id" {
-  value       = try(aws_instance.app[0].id, "")
+  value       = aws_instance.app.id
   description = "ID of the standalone app instance used for AMI baking"
 }
