@@ -17,13 +17,3 @@ output "app_instance_id" {
   value       = module.compute.app_instance_id
   description = "ID of the standalone app instance used for AMI baking"
 }
-
-output "route53_name_servers" {
-  value       = module.route53.name_servers
-  description = "The name servers of the Route 53 hosted zone to point your domain to."
-}
-
-output "configured_domain" {
-  value       = module.route53.domain_name
-  description = "The configured domain name for the VictoriaMetrics environment."
-}
