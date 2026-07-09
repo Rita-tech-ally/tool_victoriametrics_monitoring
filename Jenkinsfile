@@ -12,6 +12,9 @@ pipeline {
 
         // SSH Private Key from Jenkins (using the existing ID 'ssh-key')
         SSH_KEY_FILE          = credentials('ssh-key')
+
+        // Ansible Vault Password
+        ANSIBLE_VAULT_PASSWORD = 'RituVaultPass2026!'
     }
 
     stages {
