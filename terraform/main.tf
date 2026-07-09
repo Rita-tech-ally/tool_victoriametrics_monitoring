@@ -30,6 +30,7 @@ module "load_balancers" {
 
   app_asg_desired = var.app_asg_desired
   app_asg_min     = var.app_asg_min
+  grafana_instance_id = module.compute.grafana_instance_id
 }
 
 module "compute" {
