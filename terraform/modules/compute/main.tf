@@ -45,7 +45,7 @@ resource "aws_instance" "app" {
   }
 }
 
-# 2. APP LAUNCH TEMPLATE (vminsert + vmselect + vmagent)
+# APP LAUNCH TEMPLATE (vminsert + vmselect + vmagent)
 resource "aws_launch_template" "app" {
   name_prefix   = "${var.project_name}-${var.environment}-app-"
   image_id      = var.ami_id_ingestion
@@ -60,16 +60,14 @@ resource "aws_launch_template" "app" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name      = "vm-app"
+      Name      = "${var.project_name}-${var.environment}-app"
       component = "vm-app"
       Project   = var.project_name
-      extrarole = "vmagent"
     }
   }
 }
 
-
-# 6. STORAGE INSTANCES (Count based with exact conditional tagging)
+# STORAGE INSTANCES (Count based with exact conditional tagging)
 resource "aws_instance" "storage" {
   count                  = 3
   ami                    = var.ami_id_storage
@@ -82,27 +80,11 @@ resource "aws_instance" "storage" {
     Name      = "vmstorage-${count.index + 1}"
     component = "vmstorage"
     Project   = var.project_name
-    extrarole = "vmagent"
+    extrarole = "vmalert"
   }
 }
 
-# 7. VMALERT INSTANCE (Dedicated vmalert node)
-resource "aws_instance" "vmalert" {
-  ami                    = var.ami_id_query
-  instance_type          = "t3.micro"
-  key_name               = var.ssh_key_name
-  subnet_id              = var.private_subnets[2] # ap-south-1c
-  vpc_security_group_ids = [var.sg_query_id, var.sg_storage_id]
-
-  tags = {
-    Name      = "vmalert"
-    component = "vmalert"
-    Project   = var.project_name
-    extrarole = "vmagent"
-  }
-}
-
-# 8. GRAFANA INSTANCE (Dedicated grafana node)
+# GRAFANA INSTANCE (Dedicated grafana node)
 resource "aws_instance" "grafana" {
   ami                    = var.ami_id_query
   instance_type          = "t3.micro"
@@ -114,6 +96,5 @@ resource "aws_instance" "grafana" {
     Name      = "grafana"
     component = "grafana"
     Project   = var.project_name
-    extrarole = "vmagent"
   }
 }
