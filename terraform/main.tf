@@ -53,14 +53,6 @@ module "compute" {
   app_asg_desired = var.app_asg_desired
 }
 
-module "route53" {
-  source         = "./modules/route53"
-  create_route53 = var.create_route53
-  domain_name    = var.domain_name
-  alb_dns_name   = module.load_balancers.query_alb_dns
-  alb_zone_id    = module.load_balancers.alb_zone_id
-}
-
 resource "local_file" "ansible_cfg" {
   filename = "${path.module}/../ansible.cfg"
   content  = <<EOT
