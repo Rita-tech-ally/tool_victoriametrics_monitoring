@@ -79,3 +79,15 @@ variable "app_asg_min" {
   type    = number
   default = 1
 }
+
+variable "create_route53" {
+  type        = bool
+  default     = true
+  description = "Flag to enable or disable Route 53 resource creation."
+}
+
+variable "domain_name" {
+  type        = string
+  default     = "ritu-monitoring.click"
+  description = "The domain name for the hosted zone (e.g. yourdomain.com)."
+}

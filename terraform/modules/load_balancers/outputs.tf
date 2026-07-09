@@ -17,3 +17,8 @@ output "tg_vmselect_arn" {
   value       = aws_lb_target_group.vmselect.arn
   description = "ARN of the target group for the vmselect service."
 }
+
+output "alb_zone_id" {
+  value       = aws_lb.main.zone_id
+  description = "The zone ID of the ALB."
+}
