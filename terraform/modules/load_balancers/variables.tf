@@ -42,3 +42,8 @@ variable "app_asg_min" {
   type    = number
   default = 0
 }
+
+variable "grafana_instance_id" {
+  type        = string
+  description = "ID of the Grafana instance"
+}
