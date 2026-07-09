@@ -86,7 +86,7 @@ resource "aws_instance" "storage" {
   }
 }
 
-# 7. VMALERT INSTANCE (Grafana + vmalert node as shown in the diagram)
+# 7. VMALERT INSTANCE (Dedicated vmalert node)
 resource "aws_instance" "vmalert" {
   ami                    = var.ami_id_query
   instance_type          = "t3.micro"
@@ -95,9 +95,25 @@ resource "aws_instance" "vmalert" {
   vpc_security_group_ids = [var.sg_query_id, var.sg_storage_id]
 
   tags = {
-    Name      = "vmalert-grafana"
+    Name      = "vmalert"
+    component = "vmalert"
+    Project   = var.project_name
+    extrarole = "vmagent"
+  }
+}
+
+# 8. GRAFANA INSTANCE (Dedicated grafana node)
+resource "aws_instance" "grafana" {
+  ami                    = var.ami_id_query
+  instance_type          = "t3.micro"
+  key_name               = var.ssh_key_name
+  subnet_id              = var.private_subnets[2] # ap-south-1c
+  vpc_security_group_ids = [var.sg_query_id, var.sg_storage_id]
+
+  tags = {
+    Name      = "grafana"
     component = "grafana"
     Project   = var.project_name
-    extrarole = "vmalert"
+    extrarole = "vmagent"
   }
 }
