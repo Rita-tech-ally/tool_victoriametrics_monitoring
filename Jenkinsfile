@@ -30,6 +30,10 @@ pipeline {
                     echo "Preparing SSH private key for Terraform and Ansible..."
                     sh 'cp "$SSH_KEY_FILE" sakshi.pem'
                     sh 'chmod 400 sakshi.pem'
+
+                    echo "Preparing Ansible Vault password file..."
+                    sh 'echo "$ANSIBLE_VAULT_PASSWORD" > .vault_pass'
+                    sh 'chmod 600 .vault_pass'
                 }
             }
         }
@@ -106,8 +110,8 @@ pipeline {
         always {
             script {
                 try {
-                    echo "Cleaning up temporary private key file..."
-                    sh 'rm -f sakshi.pem'
+                    echo "Cleaning up temporary private key and vault pass files..."
+                    sh 'rm -f sakshi.pem .vault_pass'
                 } catch (Exception e) {
                     echo "Skipping file cleanup: No active agent node workspace found (${e.getMessage()})"
                 }

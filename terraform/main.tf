@@ -69,6 +69,7 @@ inventory = aws_ec2.yml
 host_key_checking = False
 remote_user = ubuntu
 private_key_file = sakshi.pem
+vault_password_file = .vault_pass
 timeout = 60
 
 [ssh_connection]
