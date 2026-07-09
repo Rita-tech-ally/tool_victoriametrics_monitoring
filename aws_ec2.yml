@@ -4,13 +4,13 @@ plugin: amazon.aws.aws_ec2
 regions:
   - ap-south-1
 
+# Filters me se tag:Project hata diya hai
 filters:
   instance-state-name: running
-  tag:Project:
-    - "victoria-metrics"
   tag:component:
     - "vmstorage"
     - "vm-app"
+    - "grafana"
 
 hostnames:
   - ip-address
@@ -19,7 +19,7 @@ hostnames:
 
 keyed_groups:
   - key: tags.component
-    prefix: "" # 
+    prefix: ""
     separator: ""
 
   - key: tags.extrarole
@@ -30,6 +30,6 @@ groups:
   vminsert: "'vm-app' in (tags.component | default(''))"
   vmselect: "'vm-app' in (tags.component | default(''))"
   vmstorage: "'vmstorage' in (tags.component | default(''))"
-  vmagent: "true"
   vmalert: "'vmalert' in (tags.extrarole | default(''))"
-  grafana: "'grafana' in (tags.extrarole | default(''))"
+  grafana: "'grafana' in (tags.component | default(''))"
+  vmagent: "true"

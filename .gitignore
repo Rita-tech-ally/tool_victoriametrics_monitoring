@@ -11,10 +11,12 @@ sakshi.pem
 *.tfvars.json
 *.auto.tfvars
 
-# Ansible temporary files
+# Ansible files
 .ansible/
 *.retry
 *.log
+ansible.cfg
+
 
 # OS generated files
 .DS_Store

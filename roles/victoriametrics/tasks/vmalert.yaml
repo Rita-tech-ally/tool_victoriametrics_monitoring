@@ -1,20 +1,4 @@
 ---
-- name: Ensure vmuser group exists for vmalert
-  ansible.builtin.group:
-    name: "{{ vm_group }}"
-    state: present
-  become: true
-
-- name: Ensure vmuser user exists for vmalert
-  ansible.builtin.user:
-    name: "{{ vm_user }}"
-    group: "{{ vm_group }}"
-    system: true
-    shell: /usr/sbin/nologin
-    create_home: false
-    state: present
-  become: true
-
 - name: Remove any stale temporary download directory
   ansible.builtin.file:
     path: /tmp/vm_download_alert

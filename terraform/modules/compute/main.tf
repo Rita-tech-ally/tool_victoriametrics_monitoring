@@ -41,7 +41,7 @@ resource "aws_instance" "app" {
     Name      = "vm-app"
     component = "vm-app"
     Project   = var.project_name
-
+    extrarole = "vmagent"
   }
 }
 
@@ -63,6 +63,7 @@ resource "aws_launch_template" "app" {
       Name      = "vm-app"
       component = "vm-app"
       Project   = var.project_name
+      extrarole = "vmagent"
     }
   }
 }
@@ -81,6 +82,22 @@ resource "aws_instance" "storage" {
     Name      = "vmstorage-${count.index + 1}"
     component = "vmstorage"
     Project   = var.project_name
-    extrarole = count.index == 0 ? "grafana" : (count.index == 1 ? "vmalert" : "")
+    extrarole = "vmagent"
+  }
+}
+
+# 7. VMALERT INSTANCE (Grafana + vmalert node as shown in the diagram)
+resource "aws_instance" "vmalert" {
+  ami                    = var.ami_id_query
+  instance_type          = "t3.micro"
+  key_name               = var.ssh_key_name
+  subnet_id              = var.private_subnets[2] # ap-south-1c
+  vpc_security_group_ids = [var.sg_query_id, var.sg_storage_id]
+
+  tags = {
+    Name      = "vmalert-grafana"
+    component = "grafana"
+    Project   = var.project_name
+    extrarole = "vmalert"
   }
 }

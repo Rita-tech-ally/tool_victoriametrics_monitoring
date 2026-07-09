@@ -1,22 +1,6 @@
 ---
 # HA: vmselect selects the data from vmstorage (:8401).
 
-- name: Ensure vmuser group exists for vmselect
-  ansible.builtin.group:
-    name: "{{ vm_group }}"
-    state: present
-  become: true
-
-- name: Ensure vmuser user exists for vmselect
-  ansible.builtin.user:
-    name: "{{ vm_user }}"
-    group: "{{ vm_group }}"
-    system: true
-    shell: /usr/sbin/nologin
-    create_home: false
-    state: present
-  become: true
-
 - name: Create temporary download directory for vmselect
   ansible.builtin.file:
     path: /tmp/vm_download_select
