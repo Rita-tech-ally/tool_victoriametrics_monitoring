@@ -41,7 +41,6 @@ resource "aws_instance" "app" {
     Name      = "vm-app"
     component = "vm-app"
     Project   = var.project_name
-    extrarole = "vmagent"
   }
 }
 
