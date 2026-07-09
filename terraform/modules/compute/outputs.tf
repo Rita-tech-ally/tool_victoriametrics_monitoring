@@ -12,3 +12,8 @@ output "app_instance_id" {
   value       = aws_instance.app.id
   description = "ID of the standalone app instance used for AMI baking"
 }
+
+output "grafana_instance_id" {
+  value       = aws_instance.grafana.id
+  description = "ID of the Grafana instance"
+}
