@@ -1,6 +1,6 @@
 variable "create_route53" {
   type        = bool
-  default     = true
+  default     = false
   description = "Flag to enable or disable Route 53 resource creation."
 }
 
